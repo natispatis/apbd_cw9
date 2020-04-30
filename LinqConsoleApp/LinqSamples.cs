@@ -259,11 +259,14 @@ namespace LinqConsoleApp
         public void Przyklad6()
         {
             var result = Emps.Join(Depts,
-                                   emp => emp,
-                                   dept => dept,
-                                   (emp, dept) => emp);
-            
-
+                                   emp => emp.Deptno,
+                                   dept => dept.Deptno,
+                                   (emp, dept) => new
+                                   {
+                                       emp.Ename, 
+                                       emp.Job, 
+                                       dept.Dname
+                                   });
         }
 
         /// <summary>
@@ -339,13 +342,9 @@ namespace LinqConsoleApp
         //typu CROSS JOIN
         public void Przyklad12()
         {
-            //var crossJoin = Emps.SelectMany(e => 
-            //e.Job, (e, e2) => new { e, e2 }).Join(Depts.SelectMany(d => 
-            //d.Dname, (d, d2) => new { d, d2 }));
-
-            var empDeptJoin = Emps.Join(Depts, emp => emp.Ename, dept => dept.Ename, (emp, dept) => (
-                Ename = emp.Ename
-            ));
+            var result = Emps.SelectMany(emp =>
+                Depts.Select(dept => 
+                Tuple.Create(emp, dept)));
         }
     }
 }
